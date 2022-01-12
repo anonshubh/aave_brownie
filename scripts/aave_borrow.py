@@ -49,6 +49,28 @@ def main():
     print("Borrowed some dai!")
     get_borrowable_data(lending_pool, account)
 
+    # Repay
+    repay_all(amount, lending_pool, account)
+    print("You just deposited,borrowed and repayed with aave!")
+
+
+def repay_all(amount, lending_pool, account):
+    appove_erc20_token(
+        Web3.toWei(amount, "ether"),
+        lending_pool,
+        config["networks"][network.show_active()]["dai_token"],
+        account,
+    )
+    repay_tx = lending_pool.repay(
+        config["networks"][network.show_active()]["dai_token"],
+        amount,
+        1,
+        account,
+        {"from": account},
+    )
+    repay_tx.wait(1)
+    print("Repayed!")
+
 
 def get_asset_price(price_feed_address):
     dai_eth_price_feed = interface.AggregatorV3Interface(price_feed_address)
